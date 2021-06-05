@@ -1,0 +1,712 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "PetitionService"
+  },
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/api/categories": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Get all categories",
+        "description": "",
+        "operationId": "getcategories",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Category"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/api/petitions": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Get all petitions",
+        "description": "",
+        "operationId": "getPetitions",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "pid": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "integer"
+                  },
+                  "creator": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "datetime_created": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/api/petitions/{pid}": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Get petition by id",
+        "description": "Returns a single petition",
+        "operationId": "getPetitionById",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "description": "ID of petition to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "pid": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "integer"
+                  },
+                  "creator": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "datetime_created": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/api/petitions/{pid}/voters": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Get voters for petition",
+        "description": "Returns a single petition",
+        "operationId": "getVotersByPid",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "description": "ID of petition to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "uid": {
+                    "type": "integer"
+                  },
+                  "full_name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/api/petitions/save": {
+      "post": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Create petition",
+        "description": "",
+        "operationId": "addPet",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "petition",
+            "description": "Petition object that needs to be added",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "integer"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petition_auth": [
+              "write:petition",
+              "read:petition"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/petitions/vote/{pid}": {
+      "post": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Vote for petition",
+        "description": "",
+        "operationId": "votePet",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "description": "ID of petition to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petition_auth": [
+              "write:petition",
+              "read:petition"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Get all users",
+        "description": "",
+        "operationId": "getusers",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "uid": {
+                    "type": "integer"
+                  },
+                  "full_name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/api/statistics": {
+      "get": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Get stastics",
+        "description": "",
+        "operationId": "getstatistics",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "petitions_number": {
+                  "type": "integer"
+                },
+                "vote_number": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/api/logout": {
+      "post": {
+        "tags": [
+          "api"
+        ],
+        "summary": "Blacklists refresh token",
+        "description": "",
+        "operationId": "LogOut",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "refresh",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "refresh": {
+                  "type": "string",
+                  "format": "Base64"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petition_auth": [
+              "write:petition",
+              "read:petition"
+            ]
+          }
+        ]
+      }
+    },
+    "/auth/jwt/create/": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Create access and refresh token",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "createAccess",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/auth/jwt/refresh/": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Returns new access token",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "returnAccess",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "refresh",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "refresh": {
+                  "type": "string",
+                  "format": "Base64"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        },
+        "security": [
+          {
+            "petition_auth": [
+              "write:petition",
+              "read:petition"
+            ]
+          }
+        ]
+      }
+    },
+    "/auth/users/": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Creates new user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "createUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/auth/users/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Get info about current user",
+        "description": "",
+        "operationId": "getMe",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "petition_auth": [
+              "write:petition",
+              "read:petition"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "petition_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "http://petition.swagger.io/oauth/dialog",
+      "flow": "implicit",
+      "scopes": {
+        "write:petition": "modify petitions in your account",
+        "read:petition": "read your petitions"
+      }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "Petition": {
+      "type": "object",
+      "properties": {
+        "pid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "category": {
+          "type": "integer"
+        },
+        "creator": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "datetime_created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "DateExpires": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "IsExpired": {
+          "type": "boolean"
+        },
+        "VoteCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "HasPassed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Voters": {
+      "type": "object",
+      "properties": {
+        "pid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "uid": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "password": {
+          "type": "string"
+        },
+        "last_login": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "is_superuser": {
+          "type": "boolean"
+        },
+        "username": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "is_staff": {
+          "type": "boolean"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "date_joined": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "first_name": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
